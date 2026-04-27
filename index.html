@@ -1,0 +1,1413 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<title>GoWinDo it — нейро-агентство полного цикла</title>
+<meta name="description" content="Нейро-агентство GoWinDo it. Выстроим систему привлечения клиентов под ключ: сайт, реклама, SEO/GEO, CRM, ИИ-агенты, аналитика. Один договор." />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="GoWinDo it — нейро-агентство полного цикла" />
+<meta property="og:description" content="Сайт → Реклама → SEO → CRM → ИИ-агенты → Дашборд. Один договор. Под ключ." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg: #FFFBF5;
+    --bg-2: #FFF7ED;
+    --ink: #1A1A1A;
+    --ink-2: #374151;
+    --ink-3: #6B7280;
+    --rule: #F3F4F6;
+    --accent: #F97316;
+    --accent-ink: #EA580C;
+    --accent-tint: #FFEDD5;
+    --accent-soft: #FED7AA;
+    --wire: #3B82F6;
+    --good: #10B981;
+    --warn: #FBBF24;
+    --bad: #EF4444;
+
+    /* density-driven scales */
+    --scale: 1;
+    --pad-section: 80px;
+    --pad-cell: 24px;
+    --gap-hero: 64px;
+    --hero-pad-b: 64px;
+    --h1-size: 76px;
+    --h1-weight: 800;
+    --h1-leading: 1.08;
+    --sec-title: 48px;
+    --sub-size: 19px;
+
+    /* motion */
+    --wire-speed: 1.2s;
+    --pulse-speed: 1.8s;
+    --blink-speed: 1.4s;
+    --marquee-speed: 40s;
+    --pulse-spread: 8px;
+    --wire-width: 2;
+
+    /* radii */
+    --r-sm: 12px;
+    --r-md: 16px;
+    --r-lg: 20px;
+    --r-xl: 24px;
+
+    /* shadows */
+    --shadow-card: 0 4px 16px rgba(249,115,22,0.08);
+    --shadow-lift: 0 12px 40px rgba(0,0,0,0.08);
+    --shadow-glow: 0 8px 32px rgba(249,115,22,0.25);
+    --shadow-glow-lg: 0 20px 60px rgba(249,115,22,0.20);
+
+    /* easings */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 0.3s;
+  }
+
+  /* removed clinical/dark vibes — single warm theme */
+
+  /* removed density variants — single standard */
+
+  /* removed energy variants — pulsing by default */
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;-webkit-font-smoothing:antialiased}
+  .display{font-family:"Outfit",sans-serif;letter-spacing:-0.03em}
+  .mono{font-family:"JetBrains Mono",monospace;letter-spacing:0}
+  .caps{font-family:"JetBrains Mono",monospace;text-transform:uppercase;letter-spacing:0.12em;font-size:11px}
+  a{color:inherit}
+  ::selection{background:var(--accent-tint);color:var(--accent-ink)}
+
+  /* ——— Variant tabs ——— */
+  .vtabs{position:sticky;top:0;z-index:60;background:var(--ink);color:var(--bg);border-bottom:1px solid var(--ink)}
+  .vtabs-inner{max-width:1280px;margin:0 auto;padding:0 32px;display:flex;align-items:stretch;gap:0;height:38px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .vtabs .vlabel{display:flex;align-items:center;color:color-mix(in oklab, var(--bg) 55%, transparent);padding-right:18px;border-right:1px solid color-mix(in oklab, var(--bg) 18%, transparent)}
+  .vtabs a{display:flex;align-items:center;gap:10px;padding:0 18px;color:color-mix(in oklab, var(--bg) 70%, transparent);text-decoration:none;border-right:1px solid color-mix(in oklab, var(--bg) 12%, transparent);transition:.15s}
+  .vtabs a:hover{color:var(--bg);background:color-mix(in oklab, var(--bg) 8%, transparent)}
+  .vtabs a.active{color:var(--bg);background:var(--accent);color:#1a1410}
+  .vtabs a .vn{opacity:.6;font-weight:500}
+  .vtabs a.active .vn{opacity:.9}
+  .vtabs .spacer{flex:1}
+  .vtabs .vmeta{display:flex;align-items:center;color:color-mix(in oklab, var(--bg) 45%, transparent);padding-left:18px;border-left:1px solid color-mix(in oklab, var(--bg) 18%, transparent);gap:10px}
+  .vtabs .vmeta .vd{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in oklab, var(--accent) 25%, transparent)}
+
+  /* ——— Top bar (glassmorphism) ——— */
+  .topbar{
+    border-bottom:1px solid rgba(0,0,0,0.06);
+    background:rgba(255,251,245,0.75);
+    backdrop-filter:blur(18px) saturate(180%);
+    -webkit-backdrop-filter:blur(18px) saturate(180%);
+    position:sticky;top:0;z-index:30;
+  }
+  .topbar-inner{
+    max-width:1320px;margin:0 auto;
+    display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:14px 32px;gap:24px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-family:"Outfit",sans-serif;font-weight:800;font-size:18px}
+  .brand-mark{
+    width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-ink));position:relative;display:inline-block;
+  }
+  .brand-mark::after{
+    content:"";position:absolute;inset:6px;background:#fff;border-radius:3px;
+  }
+  .brand-tag{color:var(--ink-3);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;margin-left:6px;text-transform:uppercase;font-weight:500}
+  nav.primary{display:flex;gap:28px;justify-self:center}
+  nav.primary a{color:var(--ink);text-decoration:none;font-size:14px;font-weight:600;transition:color var(--dur)}
+  nav.primary a:hover{color:var(--accent)}
+  .topbar-cta{justify-self:end;display:flex;align-items:center;gap:14px}
+  .pill-status{display:inline-flex;align-items:center;gap:8px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px rgba(16,185,129,0.18)}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    height:44px;padding:0 20px;
+    font-family:"Inter",sans-serif;font-weight:600;font-size:14px;
+    border-radius:var(--r-sm);border:1px solid var(--ink);background:var(--ink);color:var(--bg);
+    cursor:pointer;text-decoration:none;
+    transition:transform var(--dur) var(--ease-out), background var(--dur), box-shadow var(--dur);
+  }
+  .btn:hover{background:var(--accent-ink);border-color:var(--accent-ink);transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:rgba(0,0,0,0.12)}
+  .btn.ghost:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .btn .arrow{display:inline-block;transform:translateX(0);transition:transform .2s}
+  .btn:hover .arrow{transform:translateX(3px)}
+  .btn.lg{height:54px;padding:0 24px;font-size:15px;border-radius:var(--r-md)}
+  .btn.accent{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:var(--shadow-glow)}
+  .btn.accent:hover{background:var(--accent-ink);color:#fff;border-color:var(--accent-ink);transform:translateY(-3px);box-shadow:var(--shadow-glow-lg)}
+
+  /* Layout */
+  .wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+  .section{border-top:1px solid var(--ink);padding:var(--pad-section) 32px;max-width:1320px;margin:0 auto}
+  .section-head{display:grid;grid-template-columns:auto 1fr auto;align-items:end;gap:32px;margin-bottom:48px}
+  .section-num{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+  .section-num b{color:var(--ink);font-weight:600}
+  .section-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:var(--sec-title);letter-spacing:-0.025em;line-height:1.08;margin:0;text-wrap:balance;max-width:880px}
+  .section-title em{font-style:normal;color:var(--accent-ink);background:linear-gradient(180deg, transparent 62%, var(--accent-tint) 62%, var(--accent-tint) 92%, transparent 92%);padding:0 2px}
+  .section-aside{font-size:13px;color:var(--ink-2);max-width:260px;text-align:right;line-height:1.5}
+
+  /* ——— HERO ——— */
+  .hero{
+    max-width:1320px;margin:0 auto;
+    padding:48px 32px var(--hero-pad-b);
+    display:grid;grid-template-columns:minmax(0, 1.05fr) minmax(0, 1fr);
+    gap:var(--gap-hero);align-items:start;
+    position:relative;
+  }
+  .hero::before{
+    content:"";position:absolute;top:-100px;right:-200px;width:600px;height:600px;
+    background:radial-gradient(circle,rgba(249,115,22,0.08) 0%,transparent 70%);
+    pointer-events:none;z-index:0;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    color:var(--ink-2);
+    padding:6px 0;
+    border-top:1px solid var(--ink);
+    margin-bottom:28px;
+  }
+  .eyebrow .num{color:var(--ink);font-weight:600}
+  .eyebrow .sep{color:var(--ink-3)}
+
+  h1.headline{
+    font-family:"Outfit",sans-serif;
+    font-weight:800;
+    font-size:var(--h1-size);line-height:var(--h1-leading);letter-spacing:-0.035em;
+    margin:0 0 28px;
+    color:var(--ink);
+    text-wrap:balance;
+    position:relative;z-index:1;
+  }
+  h1.headline em{
+    font-style:normal;
+    color:var(--ink);
+    background:linear-gradient(180deg, transparent 62%, var(--accent-tint) 62%, var(--accent-tint) 92%, transparent 92%);
+    padding:0 4px;
+  }
+  .sub-line{
+    display:inline-flex;flex-wrap:wrap;align-items:center;gap:14px;
+    border:1px solid var(--ink);padding:10px 16px;
+    margin-bottom:28px;background:var(--bg);
+    font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.04em;
+  }
+  .sub-line .sl-step b{color:var(--accent-ink);margin-right:6px;font-weight:600}
+  .sub-line .sl-arr{color:var(--accent);font-weight:600}
+  .slogan{
+    display:flex;gap:14px;align-items:center;
+    font-family:"Outfit",sans-serif;font-weight:600;letter-spacing:-0.01em;
+    font-size:15px;color:var(--ink);margin-bottom:24px;
+  }
+  .slogan .pill{
+    border:1px solid var(--ink);padding:6px 12px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  }
+  .slogan .pill.acc{background:var(--accent);border-color:var(--accent)}
+
+  p.sub{
+    font-size:var(--sub-size);line-height:1.5;color:var(--ink-2);
+    max-width:580px;margin:0 0 32px;
+  }
+  p.sub b{color:var(--ink);font-weight:600}
+
+  /* Diagnostic input */
+  .diagnostic{
+    border:1px solid var(--ink);
+    background:var(--bg);
+    padding:18px 18px 18px 22px;
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:14px;
+    margin-bottom:18px;
+    position:relative;
+  }
+  .diagnostic::before{
+    content:"";position:absolute;left:-1px;top:-1px;bottom:-1px;width:4px;background:var(--accent);
+  }
+  .diagnostic .label{display:flex;flex-direction:column;gap:2px}
+  .diagnostic .label .caps{color:var(--ink-2)}
+  .diagnostic .label .lab{font-weight:600;font-size:13px}
+  .diagnostic input{
+    border:0;background:transparent;outline:0;
+    font-family:"JetBrains Mono",monospace;
+    font-size:16px;color:var(--ink);
+    padding:6px 8px;
+    border-bottom:1px dashed var(--rule);
+    width:100%;
+  }
+  .diagnostic input::placeholder{color:var(--ink-3)}
+  .diagnostic .btn{height:48px;padding:0 22px;font-size:14px}
+
+  .cta-row{display:flex;align-items:center;gap:18px;margin-bottom:40px;flex-wrap:wrap}
+  .cta-row .secondary{
+    color:var(--ink);font-weight:500;font-size:14px;
+    text-decoration:none;border-bottom:1px solid var(--ink);
+    padding-bottom:2px;
+  }
+  .cta-row .secondary:hover{color:var(--accent-ink);border-color:var(--accent-ink)}
+
+  /* Trust strip */
+  .trust{
+    display:grid;grid-template-columns:repeat(4, 1fr);
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+    padding:18px 0;
+  }
+  .trust .cell{padding:0 8px}
+  .trust .num{font-family:"Outfit",sans-serif;font-weight:600;font-size:24px;letter-spacing:-0.02em;color:var(--ink);line-height:1}
+  .trust .lab{margin-top:8px;color:var(--ink-2);font-size:12px;line-height:1.35}
+  .trust .num .u{color:var(--accent-ink)}
+
+  /* ——— Stack diagram (right column) ——— */
+  .panel{
+    border:1px solid var(--ink);
+    background:var(--bg);
+    padding:0;
+    position:relative;
+    box-shadow: 8px 8px 0 0 var(--ink);
+  }
+  .panel-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 16px;border-bottom:1px solid var(--ink);
+    background:var(--ink);color:var(--bg);
+  }
+  .panel-head .title{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+  .panel-head .right{display:flex;align-items:center;gap:14px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;color:color-mix(in oklab, var(--bg) 70%, transparent)}
+  .panel-head .live{display:inline-flex;align-items:center;gap:6px}
+  .panel-head .live .d{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink var(--blink-speed) infinite}
+  @keyframes blink{0%,60%{opacity:1}30%{opacity:0.25}}
+
+  .stage{
+    position:relative;
+    padding:24px;
+    background:
+      linear-gradient(var(--rule) 1px, transparent 1px) 0 0/24px 24px,
+      linear-gradient(90deg, var(--rule) 1px, transparent 1px) 0 0/24px 24px,
+      var(--bg);
+    background-color:var(--bg-2);
+  }
+  .stage-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    grid-auto-rows:minmax(96px, auto);
+    gap:14px;
+    position:relative;
+    z-index:2;
+  }
+  .node{
+    border:1px solid var(--ink);
+    background:var(--bg);
+    padding:14px;
+    position:relative;
+    display:flex;flex-direction:column;justify-content:space-between;
+    min-height:96px;
+  }
+  .node .top{display:flex;align-items:center;justify-content:space-between}
+  .node .ico{
+    width:24px;height:24px;border:1px solid var(--ink);display:grid;place-items:center;
+    font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;
+    background:var(--bg);
+  }
+  .node .stat{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+  .node .name{font-family:"Outfit",sans-serif;font-weight:600;font-size:15px;letter-spacing:-0.01em;margin-top:8px}
+  .node .meta{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-3);margin-top:2px}
+  .node.accent{background:var(--ink);color:var(--bg)}
+  .node.accent .ico{border-color:var(--bg);background:var(--ink);color:var(--bg)}
+  .node.accent .stat{color:color-mix(in oklab, var(--bg) 65%, transparent)}
+  .node.accent .meta{color:color-mix(in oklab, var(--bg) 60%, transparent)}
+  .node.accent .name{color:var(--bg)}
+  .node.accent .ico{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+  .node.fix{background:var(--bg);}
+  .node.fix .stat{color:var(--accent-ink)}
+  .node.fix .ico{background:var(--accent);border-color:var(--ink)}
+  .node .pulse{
+    position:absolute;right:10px;top:10px;width:6px;height:6px;border-radius:50%;background:var(--good);
+    box-shadow:0 0 0 0 color-mix(in oklab, var(--good) 50%, transparent);
+    animation:pulse var(--pulse-speed) infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 color-mix(in oklab, var(--good) 60%, transparent)}
+    70%{box-shadow:0 0 0 var(--pulse-spread) transparent}
+    100%{box-shadow:0 0 0 0 transparent}
+  }
+
+  /* SVG connector overlay */
+  svg.wires{
+    position:absolute;inset:24px;
+    width:calc(100% - 48px);height:calc(100% - 48px);
+    pointer-events:none;z-index:1;
+    overflow:visible;
+  }
+  .wires path{fill:none;stroke:var(--wire);stroke-width:1.25;stroke-dasharray:3 3}
+  .wires path{stroke-width:calc(var(--wire-width) * 0.6)}
+  .wires path.live{stroke:var(--accent);stroke-width:var(--wire-width);stroke-dasharray:6 6;animation:dash var(--wire-speed) linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-18}}
+
+  /* Footer of panel */
+  .panel-foot{
+    border-top:1px solid var(--ink);
+    display:grid;grid-template-columns:1fr 1fr 1fr;
+  }
+  .panel-foot .cell{
+    padding:14px 16px;border-right:1px solid var(--rule);
+  }
+  .panel-foot .cell:last-child{border-right:0}
+  .panel-foot .k{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+  .panel-foot .v{font-family:"Outfit",sans-serif;font-weight:600;font-size:18px;letter-spacing:-0.02em;color:var(--ink);margin-top:2px}
+  .panel-foot .v .ok{color:var(--good)}
+  .panel-foot .v .fix{color:var(--accent-ink)}
+
+  /* Marquee */
+  .marquee{
+    border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+    background:var(--bg);
+    overflow:hidden;
+  }
+  .marquee-inner{
+    display:flex;gap:48px;align-items:center;
+    padding:14px 0;
+    animation:slide var(--marquee-speed) linear infinite;
+    white-space:nowrap;
+    width:max-content;
+  }
+  .marquee span{
+    font-family:"Outfit",sans-serif;font-weight:500;font-size:18px;letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+  .marquee .dot-sep{width:6px;height:6px;background:var(--accent);display:inline-block;border-radius:50%;flex-shrink:0}
+  @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ——— [02] Diagnosis ——— */
+  .diag-grid{
+    display:grid;grid-template-columns:repeat(3, 1fr);gap:0;
+    border:1px solid var(--ink);
+  }
+  .diag-cell{
+    padding:var(--pad-cell);border-right:1px solid var(--ink);border-bottom:1px solid var(--ink);
+    display:flex;flex-direction:column;gap:14px;min-height:200px;
+    position:relative;background:var(--bg);
+  }
+  .diag-cell:nth-child(3n){border-right:0}
+  .diag-cell:nth-last-child(-n+3){border-bottom:0}
+  .diag-cell .marker{display:flex;align-items:center;justify-content:space-between}
+  .diag-cell .marker .lbl{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+  .diag-cell .marker .x{
+    font-family:"Outfit",sans-serif;font-weight:600;color:var(--bad);
+    border:1px solid var(--bad);width:22px;height:22px;display:grid;place-items:center;font-size:13px;
+  }
+  .diag-cell.ok .marker .x{color:var(--good);border-color:var(--good)}
+  .diag-cell h3{font-family:"Outfit",sans-serif;font-weight:600;font-size:21px;line-height:1.15;margin:0;letter-spacing:-0.01em}
+  .diag-cell p{margin:0;color:var(--ink-2);font-size:14px;line-height:1.5}
+  .diag-cell .quote{
+    margin-top:auto;padding-top:14px;border-top:1px dashed var(--rule);
+    font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);
+  }
+
+  /* ——— [03] What we build ——— */
+  .what-grid{
+    display:grid;grid-template-columns:repeat(4, 1fr);gap:0;
+    border:1px solid var(--ink);
+  }
+  .what-cell{
+    padding:var(--pad-cell);border-right:1px solid var(--ink);border-bottom:1px solid var(--ink);
+    display:flex;flex-direction:column;gap:10px;min-height:240px;
+    background:var(--bg);position:relative;
+  }
+  .what-cell:nth-child(4n){border-right:0}
+  .what-cell:nth-last-child(-n+4){border-bottom:0}
+  .what-cell .num{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;color:var(--ink-3)}
+  .what-cell .ico{
+    width:40px;height:40px;border:1px solid var(--ink);display:grid;place-items:center;
+    font-family:"Outfit",sans-serif;font-weight:700;font-size:18px;
+    background:var(--bg);margin-bottom:6px;
+  }
+  .what-cell h4{font-family:"Outfit",sans-serif;font-weight:600;font-size:18px;margin:0;letter-spacing:-0.01em}
+  .what-cell p{margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.5}
+  .what-cell ul{margin:auto 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+  .what-cell ul li{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-2);padding-left:14px;position:relative}
+  .what-cell ul li::before{content:"→";position:absolute;left:0;color:var(--accent-ink)}
+  .what-cell.hl{background:var(--ink);color:var(--bg)}
+  .what-cell.hl .num,.what-cell.hl ul li{color:color-mix(in oklab, var(--bg) 65%, transparent)}
+  .what-cell.hl .ico{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+  .what-cell.hl p{color:color-mix(in oklab, var(--bg) 75%, transparent)}
+  .what-cell.hl ul li::before{color:var(--accent)}
+
+  /* ——— [04] Before / After ——— */
+  .ba-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--ink)}
+  .ba-col{padding:32px;position:relative}
+  .ba-col.before{border-right:1px solid var(--ink);background:var(--bg-2)}
+  .ba-col.after{background:var(--ink);color:var(--bg)}
+  .ba-col .tag{
+    display:inline-block;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    padding:4px 10px;border:1px solid currentColor;margin-bottom:18px;
+  }
+  .ba-col.after .tag{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+  .ba-col h3{font-family:"Outfit",sans-serif;font-weight:600;font-size:32px;letter-spacing:-0.02em;margin:0 0 24px;line-height:1.05}
+  .ba-list{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--rule)}
+  .ba-col.after .ba-list{border-top-color:color-mix(in oklab, var(--bg) 25%, transparent)}
+  .ba-list .row{display:grid;grid-template-columns:36px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--rule)}
+  .ba-col.after .ba-list .row{border-bottom-color:color-mix(in oklab, var(--bg) 25%, transparent)}
+  .ba-list .ic{
+    width:28px;height:28px;display:grid;place-items:center;border:1px solid currentColor;font-family:"JetBrains Mono",monospace;font-size:13px;
+  }
+  .ba-col.after .ba-list .ic{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+  .ba-list .lbl{font-size:14.5px;font-weight:500}
+  .ba-list .lbl small{display:block;font-weight:400;color:var(--ink-3);font-family:"JetBrains Mono",monospace;font-size:11px;margin-top:2px}
+  .ba-col.after .ba-list .lbl small{color:color-mix(in oklab, var(--bg) 60%, transparent)}
+  .ba-list .val{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .ba-col.after .ba-list .val{color:color-mix(in oklab, var(--bg) 65%, transparent)}
+  .ba-col.after .ba-list .val.ok{color:var(--accent)}
+
+  /* ——— [05] Тарифы ——— */
+  .tariff-grid{
+    display:grid;grid-template-columns:repeat(5, 1fr);gap:0;
+    border:1px solid var(--ink);
+  }
+  .tariff{
+    padding:var(--pad-cell);border-right:1px solid var(--ink);background:var(--bg);
+    display:flex;flex-direction:column;gap:14px;min-height:560px;position:relative;
+  }
+  .tariff:last-child{border-right:0}
+  .tariff .head{display:flex;flex-direction:column;gap:6px;padding-bottom:14px;border-bottom:1px solid var(--rule)}
+  .tariff .ix{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;color:var(--ink-3)}
+  .tariff h4{font-family:"Outfit",sans-serif;font-weight:600;font-size:22px;letter-spacing:-0.02em;margin:0;line-height:1.05}
+  .tariff .timing{font-family:"JetBrains Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+  .tariff .price{
+    font-family:"Outfit",sans-serif;font-weight:600;font-size:18px;letter-spacing:-0.01em;color:var(--ink);
+    border-top:1px solid var(--rule);padding-top:14px;margin-top:auto;
+  }
+  .tariff .price small{display:block;color:var(--ink-3);font-weight:400;font-family:"JetBrains Mono",monospace;font-size:11px;margin-top:4px}
+  .tariff .who{font-size:13px;color:var(--ink-2);line-height:1.5;font-style:italic}
+  .tariff ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .tariff ul li{font-size:13px;color:var(--ink-2);padding-left:16px;position:relative;line-height:1.4}
+  .tariff ul li::before{content:"+";position:absolute;left:0;color:var(--accent-ink);font-weight:700}
+  .tariff .cta{
+    border:1px solid var(--ink);padding:10px 14px;font-family:"Inter",sans-serif;font-weight:600;font-size:13px;text-decoration:none;color:var(--ink);
+    display:inline-flex;align-items:center;justify-content:space-between;
+  }
+  .tariff .cta:hover{background:var(--ink);color:var(--bg)}
+  .tariff.featured{background:var(--ink);color:var(--bg)}
+  .tariff.featured .ix,.tariff.featured .timing,.tariff.featured ul li,.tariff.featured .who,.tariff.featured .price small{color:color-mix(in oklab, var(--bg) 65%, transparent)}
+  .tariff.featured .head,.tariff.featured .price{border-color:color-mix(in oklab, var(--bg) 25%, transparent)}
+  .tariff.featured .price,.tariff.featured h4{color:var(--bg)}
+  .tariff.featured ul li::before{color:var(--accent)}
+  .tariff.featured .cta{border-color:var(--accent);background:var(--accent);color:var(--ink)}
+  .tariff.featured .cta:hover{background:var(--bg);color:var(--ink);border-color:var(--bg)}
+  .tariff .badge{
+    position:absolute;top:-1px;right:-1px;background:var(--accent);color:var(--ink);
+    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;
+  }
+
+  /* ——— [06] How it works ——— */
+  .how-grid{
+    display:grid;grid-template-columns:repeat(5, 1fr);gap:0;
+    border:1px solid var(--ink);position:relative;
+  }
+  .how-step{
+    padding:28px 22px;border-right:1px solid var(--ink);background:var(--bg);
+    display:flex;flex-direction:column;gap:12px;min-height:240px;position:relative;
+  }
+  .how-step:last-child{border-right:0}
+  .how-step .step-num{
+    font-family:"Outfit",sans-serif;font-weight:600;font-size:48px;letter-spacing:-0.04em;color:var(--accent-ink);line-height:1;
+  }
+  .how-step h4{font-family:"Outfit",sans-serif;font-weight:600;font-size:18px;margin:0;letter-spacing:-0.01em}
+  .how-step p{margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.5}
+  .how-step .when{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);letter-spacing:.08em;margin-top:auto}
+  .how-step .when b{color:var(--accent-ink)}
+  .how-step::after{
+    content:"→";position:absolute;right:-10px;top:36px;color:var(--accent);font-family:"Outfit",sans-serif;font-weight:600;font-size:18px;
+    background:var(--bg);padding:0 4px;z-index:2;
+  }
+  .how-step:last-child::after{display:none}
+
+  /* ——— [07] AI agents ——— */
+  .agents-grid{
+    display:grid;grid-template-columns:repeat(3, 1fr);gap:0;
+    border:1px solid var(--ink);
+  }
+  .agent{
+    padding:var(--pad-cell);border-right:1px solid var(--ink);border-bottom:1px solid var(--ink);
+    background:var(--bg);min-height:200px;display:flex;flex-direction:column;gap:10px;position:relative;
+  }
+  .agent:nth-child(3n){border-right:0}
+  .agent:nth-last-child(-n+3){border-bottom:0}
+  .agent .head-row{display:flex;align-items:center;justify-content:space-between}
+  .agent .name{font-family:"Outfit",sans-serif;font-weight:600;font-size:18px;letter-spacing:-0.01em}
+  .agent .badge{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--rule);padding:3px 8px}
+  .agent .role{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+  .agent .specs{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px dashed var(--rule);padding-top:10px}
+  .agent .specs .k{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .agent .specs .v{font-family:"Outfit",sans-serif;font-weight:600;font-size:14px;color:var(--ink);margin-top:2px}
+  .agent .pulse-dot{
+    position:absolute;right:14px;top:14px;width:7px;height:7px;border-radius:50%;background:var(--good);
+    box-shadow:0 0 0 4px color-mix(in oklab, var(--good) 18%, transparent);
+  }
+
+  /* ——— [08] SEO/GEO and ads ——— */
+  .seo-wrap{display:grid;grid-template-columns:1.1fr 1fr;gap:0;border:1px solid var(--ink)}
+  .seo-left{padding:32px;border-right:1px solid var(--ink);display:flex;flex-direction:column;gap:24px}
+  .seo-right{padding:0;background:var(--bg-2);position:relative}
+  .seo-flow{
+    display:grid;grid-template-columns:1fr;gap:0;
+    border-top:1px solid var(--rule);
+  }
+  .seo-flow .row{
+    display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
+    padding:18px 0;border-bottom:1px solid var(--rule);
+  }
+  .seo-flow .row:last-child{border-bottom:0}
+  .seo-flow .ic{width:32px;height:32px;border:1px solid var(--ink);display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600}
+  .seo-flow .lbl{font-family:"Outfit",sans-serif;font-weight:600;font-size:16px}
+  .seo-flow .lbl small{display:block;font-family:"Inter",sans-serif;font-weight:400;color:var(--ink-2);font-size:13px;margin-top:2px;letter-spacing:0}
+  .seo-flow .v{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+  .serp-mock{
+    padding:24px;display:flex;flex-direction:column;gap:14px;
+  }
+  .serp-bar{
+    border:1px solid var(--ink);background:var(--bg);padding:10px 14px;display:flex;align-items:center;gap:12px;
+    font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2);
+  }
+  .serp-bar .qq{color:var(--ink);flex:1;font-weight:500}
+  .serp-bar .lens{width:14px;height:14px;border:1.5px solid var(--ink);border-radius:50%;position:relative}
+  .serp-bar .lens::after{content:"";position:absolute;width:6px;height:1.5px;background:var(--ink);right:-5px;bottom:-1px;transform:rotate(45deg)}
+  .serp-block{border:1px solid var(--ink);background:var(--bg);padding:14px}
+  .serp-block .who{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
+  .serp-block.gpt{border-style:dashed;border-color:var(--accent-ink);background:color-mix(in oklab, var(--accent) 10%, var(--bg))}
+  .serp-block .ttl{font-family:"Outfit",sans-serif;font-weight:600;font-size:15px;margin-top:4px;color:var(--accent-ink);letter-spacing:-0.01em}
+  .serp-block .body{color:var(--ink-2);font-size:13px;margin-top:4px;line-height:1.45}
+  .serp-block .body mark{background:color-mix(in oklab, var(--accent) 35%, transparent);padding:0 2px;color:var(--ink)}
+  .serp-block .url{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--good);margin-top:4px}
+
+  /* ——— [09] Proof ——— */
+  .proof-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:0;border:1px solid var(--ink)}
+  .proof{padding:var(--pad-cell);border-right:1px solid var(--ink);background:var(--bg);display:flex;flex-direction:column;gap:14px;min-height:340px;position:relative}
+  .proof:last-child{border-right:0}
+  .proof .meta-row{display:flex;align-items:center;justify-content:space-between}
+  .proof .biz{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+  .proof .city{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3)}
+  .proof .placeholder{
+    aspect-ratio:16/9;border:1px solid var(--ink);
+    background:
+      repeating-linear-gradient(45deg, var(--bg) 0 8px, var(--bg-2) 8px 16px);
+    position:relative;display:grid;place-items:center;
+  }
+  .proof .placeholder span{
+    font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-2);
+    background:var(--bg);padding:4px 8px;border:1px solid var(--ink);
+  }
+  .proof .ttl{font-family:"Outfit",sans-serif;font-weight:600;font-size:17px;letter-spacing:-0.01em;line-height:1.2;margin:0}
+  .proof .deltas{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--rule);margin-top:auto}
+  .proof .deltas div{padding:10px 8px 0;border-right:1px dashed var(--rule)}
+  .proof .deltas div:last-child{border-right:0}
+  .proof .deltas .k{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .proof .deltas .v{font-family:"Outfit",sans-serif;font-weight:600;font-size:18px;color:var(--accent-ink);letter-spacing:-0.01em;margin-top:2px}
+
+  /* ——— [10] FAQ ——— */
+  .faq{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+  details.qa{border-bottom:1px solid var(--rule);padding:0}
+  details.qa:last-child{border-bottom:0}
+  details.qa summary{
+    list-style:none;cursor:pointer;padding:22px 24px 22px 0;
+    display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
+    font-family:"Outfit",sans-serif;font-weight:600;font-size:20px;letter-spacing:-0.01em;
+  }
+  details.qa summary::-webkit-details-marker{display:none}
+  details.qa summary .ix{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);letter-spacing:.1em}
+  details.qa summary .pm{
+    width:24px;height:24px;border:1px solid var(--ink);display:grid;place-items:center;font-family:"Outfit",sans-serif;font-weight:600;
+    transition:transform .2s,background .2s,color .2s;
+  }
+  details.qa[open] summary .pm{background:var(--ink);color:var(--bg);transform:rotate(45deg)}
+  details.qa .answer{padding:0 64px 22px 64px;color:var(--ink-2);font-size:15px;line-height:1.55;max-width:880px}
+
+  /* ——— [11] Final CTA ——— */
+  .final{
+    border:1px solid var(--ink);background:var(--ink);color:var(--bg);
+    padding:64px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:end;
+    position:relative;overflow:hidden;
+  }
+  .final::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 100% 100%, color-mix(in oklab, var(--accent) 25%, transparent), transparent 50%);
+    pointer-events:none;
+  }
+  .final h2{font-family:"Outfit",sans-serif;font-weight:600;font-size:64px;line-height:0.96;letter-spacing:-0.03em;margin:0 0 24px;text-wrap:balance;position:relative}
+  .final h2 em{font-style:normal;color:var(--accent)}
+  .final p{font-size:17px;color:color-mix(in oklab, var(--bg) 75%, transparent);max-width:520px;margin:0 0 28px;position:relative}
+  .final .ctas{display:flex;gap:14px;flex-wrap:wrap;position:relative}
+  .final .ctas .btn{height:54px;padding:0 22px;font-size:15px}
+  .final .ctas .btn.ghost{color:var(--bg);border-color:var(--bg)}
+  .final .ctas .btn.ghost:hover{background:var(--bg);color:var(--ink)}
+  .final-side{position:relative;display:flex;flex-direction:column;gap:14px}
+  .final-side .item{
+    display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
+    border-top:1px solid color-mix(in oklab, var(--bg) 25%, transparent);padding:14px 0;
+  }
+  .final-side .item:last-child{border-bottom:1px solid color-mix(in oklab, var(--bg) 25%, transparent)}
+  .final-side .ix{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;color:color-mix(in oklab, var(--bg) 60%, transparent)}
+  .final-side .lab{font-family:"Outfit",sans-serif;font-weight:500;font-size:16px;color:var(--bg)}
+  .final-side .v{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+
+  /* Footer */
+  footer{
+    border-top:1px solid var(--ink);padding:32px;max-width:1320px;margin:0 auto;
+    display:grid;grid-template-columns:1fr auto auto;gap:32px;align-items:center;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
+  }
+  footer .end{display:inline-flex;align-items:center;gap:8px}
+
+  @media (max-width:1100px){
+    .hero{grid-template-columns:1fr;padding-bottom:32px}
+    h1.headline{font-size:54px}
+    .section-title{font-size:36px}
+    .section-head{grid-template-columns:1fr}
+    .section-aside{text-align:left}
+    .diag-grid,.what-grid{grid-template-columns:1fr 1fr}
+    .what-cell:nth-child(4n){border-right:1px solid var(--ink)}
+    .what-cell:nth-child(2n){border-right:0}
+    .ba-wrap,.seo-wrap{grid-template-columns:1fr}
+    .ba-col.before{border-right:0;border-bottom:1px solid var(--ink)}
+    .seo-left{border-right:0;border-bottom:1px solid var(--ink)}
+    .tariff-grid,.how-grid,.proof-grid,.agents-grid{grid-template-columns:1fr}
+    .tariff,.how-step,.proof,.agent{border-right:0;border-bottom:1px solid var(--ink)}
+    .final{grid-template-columns:1fr;padding:36px}
+    .final h2{font-size:42px}
+  }
+</style>
+</head>
+<body>
+
+
+<!-- Top bar -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      GoWinDo it
+      <span class="brand-tag">/ нейро-агентство полного цикла</span>
+    </div>
+    <nav class="primary">
+      <a href="#what">Что делаем</a>
+      <a href="#tariffs">Тарифы</a>
+      <a href="#how">Как работаем</a>
+      <a href="#agents">ИИ-агенты</a>
+      <a href="#proof">Кейсы</a>
+    </nav>
+    <div class="topbar-cta">
+      <span class="pill-status"><span class="dot"></span>Запись · апрель</span>
+      <a class="btn ghost" href="#diagnose">Бесплатная диагностика<span class="arrow">→</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= [01] HERO ======================= -->
+<section class="hero" id="diagnose" data-screen-label="01 Hero">
+  <div>
+    <div class="eyebrow caps">
+      <span class="num">[01]</span>
+      <span class="sep">/</span>
+      <span>Нейро-агентство полного цикла · приём по записи</span>
+    </div>
+
+    <h1 class="display headline">
+      <em>Выстроим систему</em>,<br/>которая приводит клиентов.
+    </h1>
+
+    <div class="sub-line">
+      <span class="sl-step"><b>01</b> Анализируем нишу</span>
+      <span class="sl-arr">→</span>
+      <span class="sl-step"><b>02</b> Выстраиваем систему</span>
+      <span class="sl-arr">→</span>
+      <span class="sl-step"><b>03</b> Включаем рост</span>
+    </div>
+
+    <div class="slogan">
+      <span class="pill acc">Go</span>
+      <span class="pill acc">Win</span>
+      <span class="pill acc">Do</span>
+      <span class="pill acc">it</span>
+      <span style="color:var(--ink-3);font-size:13px;font-family:'JetBrains Mono',monospace">Бери. Делай. Побеждай.</span>
+    </div>
+
+    <p class="sub">
+      <b>Нейро-агентство полного цикла.</b> Сайт, реклама в Директе,
+      SEO/GEO, CRM, ИИ-агенты, аналитика —
+      всё в <b>одну работающую систему</b>. Один договор. Под ключ.
+    </p>
+
+    <!-- Diagnostic input -->
+    <form class="diagnostic" onsubmit="event.preventDefault(); alert('Заявка принята. Аудит вышлем за 24–48 часов.');">
+      <div class="label">
+        <span class="caps">Шаг 01</span>
+        <span class="lab">Покажи, что есть</span>
+      </div>
+      <input type="text" placeholder="https://твой-сайт.ru   ·   или напиши «ничего нет»" />
+      <button class="btn accent" type="submit">Покажите, что не работает<span class="arrow">→</span></button>
+    </form>
+
+    <div class="cta-row">
+      <a class="secondary" href="#tariffs">Начать с нуля →</a>
+      <a class="secondary" href="#tariffs">Посмотреть тарифы →</a>
+      <span class="caps" style="color:var(--ink-3)">Без созвона · аудит за 24–48 ч</span>
+    </div>
+
+    <div class="trust">
+      <div class="cell">
+        <div class="num">7&ndash;14<span class="u"> дн.</span></div>
+        <div class="lab">Первые правки уже на сайте, не в КП</div>
+      </div>
+      <div class="cell">
+        <div class="num">5</div>
+        <div class="lab">Фиксированных тарифов — без бесконечных смет</div>
+      </div>
+      <div class="cell">
+        <div class="num">1<span class="u">×</span></div>
+        <div class="lab">Команда, договор, дашборд</div>
+      </div>
+      <div class="cell">
+        <div class="num">0</div>
+        <div class="lab">SaaS-личных кабинетов, в которых ты застрянешь сам</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live stack diagram -->
+  <div>
+    <div class="panel" aria-label="Живая диагностика стека">
+      <div class="panel-head">
+        <span class="title">growth-stack.diagnostic</span>
+        <div class="right">
+          <span>скан&nbsp;#240427</span>
+          <span class="live"><span class="d"></span>LIVE</span>
+        </div>
+      </div>
+
+      <div class="stage">
+        <svg class="wires" viewBox="0 0 600 380" preserveAspectRatio="none" aria-hidden="true">
+          <path class="live" d="M 200 60 C 215 60, 215 60, 230 60" />
+          <path class="live" d="M 400 60 C 415 60, 415 60, 430 60" />
+          <path class="live" d="M 300 110 C 300 150, 300 150, 300 190" />
+          <path d="M 500 110 C 500 150, 500 150, 500 190" />
+          <path class="live" d="M 200 220 C 230 220, 230 220, 260 220" />
+          <path class="live" d="M 360 220 C 400 220, 400 220, 430 220" />
+          <path class="live" d="M 300 250 C 300 290, 300 290, 300 330" />
+          <path d="M 500 250 C 500 290, 500 290, 470 320" />
+          <path d="M 90 30 L 90 90" />
+        </svg>
+
+        <div class="stage-grid">
+          <div class="node">
+            <div class="top"><span class="ico">Т</span><span class="stat">+38%</span></div>
+            <div><div class="name">Трафик</div><div class="meta">директ · seo · geo · посевы</div></div>
+            <span class="pulse"></span>
+          </div>
+          <div class="node accent">
+            <div class="top"><span class="ico">С</span><span class="stat">live · v2.1</span></div>
+            <div><div class="name">Сайт</div><div class="meta">конверсионный · LCP 1.2с</div></div>
+          </div>
+          <div class="node fix">
+            <div class="top"><span class="ico">Л</span><span class="stat">правка → 7д</span></div>
+            <div><div class="name">Захват лида</div><div class="meta">форма · бронь · whatsapp</div></div>
+          </div>
+
+          <div class="node" style="grid-column:1; opacity:.55">
+            <div class="top"><span class="ico" style="background:var(--bg-2)">·</span><span class="stat">архив</span></div>
+            <div><div class="name">Старая воронка</div><div class="meta">отключена при запуске</div></div>
+          </div>
+          <div class="node">
+            <div class="top"><span class="ico">К</span><span class="stat">+412 заявок</span></div>
+            <div><div class="name">CRM</div><div class="meta">воронка · источники · этапы</div></div>
+            <span class="pulse"></span>
+          </div>
+          <div class="node">
+            <div class="top"><span class="ico">А</span><span class="stat">&lt; 2 мин</span></div>
+            <div><div class="name">ИИ-агент</div><div class="meta">отвечает · квалифицирует · бронит</div></div>
+            <span class="pulse"></span>
+          </div>
+
+          <div class="node" style="opacity:.55">
+            <div class="top"><span class="ico" style="background:var(--bg-2)">·</span><span class="stat">архив</span></div>
+            <div><div class="name">Excel-таблица</div><div class="meta">leads.xlsx → перенесено</div></div>
+          </div>
+          <div class="node accent" style="grid-column:2 / span 2">
+            <div class="top"><span class="ico">Д</span><span class="stat">обновлено 6 с назад</span></div>
+            <div><div class="name">Дашборд</div><div class="meta">заявки · бюджет · конверсия · скорость ответа</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-foot">
+        <div class="cell"><div class="k">Первый аудит</div><div class="v"><span class="ok">24–48 ч</span></div></div>
+        <div class="cell"><div class="k">Первый запуск</div><div class="v"><span class="fix">7–14 дней</span></div></div>
+        <div class="cell"><div class="k">Подрядчиков</div><div class="v">1, не 5</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-inner">
+    <span>Go.</span><span class="dot-sep"></span>
+    <span>Win.</span><span class="dot-sep"></span>
+    <span>Do.</span><span class="dot-sep"></span>
+    <span>It.</span><span class="dot-sep"></span>
+    <span>Аналитика</span><span class="dot-sep"></span>
+    <span>Сайт</span><span class="dot-sep"></span>
+    <span>Директ</span><span class="dot-sep"></span>
+    <span>SEO / GEO</span><span class="dot-sep"></span>
+    <span>CRM</span><span class="dot-sep"></span>
+    <span>ИИ-агенты</span><span class="dot-sep"></span>
+    <span>Go.</span><span class="dot-sep"></span>
+    <span>Win.</span><span class="dot-sep"></span>
+    <span>Do.</span><span class="dot-sep"></span>
+    <span>Сайт</span><span class="dot-sep"></span>
+    <span>Директ</span><span class="dot-sep"></span>
+    <span>SEO / GEO</span><span class="dot-sep"></span>
+    <span>CRM</span><span class="dot-sep"></span>
+    <span>ИИ-агенты</span><span class="dot-sep"></span>
+    <span>Аналитика</span><span class="dot-sep"></span>
+    <span>Автоворонки</span><span class="dot-sep"></span>
+  </div>
+</div>
+
+<!-- ======================= [02] DIAGNOSIS ======================= -->
+<section class="section" id="diagnosis" data-screen-label="02 Diagnosis">
+  <div class="section-head">
+    <div class="section-num">[<b>02</b>] / Диагноз</div>
+    <h2 class="section-title">Узнаёшь себя? <em>Тогда ты по адресу.</em></h2>
+    <div class="section-aside">Шесть диагнозов, которые мы видим у 9 из 10 заявок. Любой из них — повод нажать кнопку.</div>
+  </div>
+
+  <div class="diag-grid">
+    <div class="diag-cell">
+      <div class="marker"><span class="lbl">Симптом · 01</span><span class="x">×</span></div>
+      <h3>Сайта нет. Или есть, но стыдно показать.</h3>
+      <p>Лендинг 2017 года, мобилка едет, форма не работает, оффер непонятен. Клиент уходит к соседу за 4 секунды.</p>
+      <div class="quote">«У меня тильда, делал племянник в 2019»</div>
+    </div>
+    <div class="diag-cell">
+      <div class="marker"><span class="lbl">Симптом · 02</span><span class="x">×</span></div>
+      <h3>Реклама сливает бюджет.</h3>
+      <p>Директ запущен «как-то», без аналитики и связи с CRM. Клики идут, заявок нет, причина неизвестна.</p>
+      <div class="quote">«30 000 в месяц на рекламу — а заявок 4»</div>
+    </div>
+    <div class="diag-cell">
+      <div class="marker"><span class="lbl">Симптом · 03</span><span class="x">×</span></div>
+      <h3>SEO и GEO — где-то на дне.</h3>
+      <p>В выдаче — конкуренты. На карте — никто. По запросам с городом — пусто. Бесплатный трафик мимо кассы.</p>
+      <div class="quote">«Нас не находят даже по своему названию»</div>
+    </div>
+    <div class="diag-cell">
+      <div class="marker"><span class="lbl">Симптом · 04</span><span class="x">×</span></div>
+      <h3>Заявки живут в WhatsApp.</h3>
+      <p>Половина в мессенджерах, треть в почте, остальные «помню, что был кто-то». CRM нет. Дожима нет.</p>
+      <div class="quote">«Менеджер ушла — клиенты ушли с ней»</div>
+    </div>
+    <div class="diag-cell">
+      <div class="marker"><span class="lbl">Симптом · 05</span><span class="x">×</span></div>
+      <h3>Лид остыл за 30 минут.</h3>
+      <p>Пока вы перезваниваете — он уже выбрал конкурента. Скорость ответа — главный канал, который никто не считает.</p>
+      <div class="quote">«Перезвонили на следующий день — поздно»</div>
+    </div>
+    <div class="diag-cell">
+      <div class="marker"><span class="lbl">Симптом · 06</span><span class="x">×</span></div>
+      <h3>Пять подрядчиков. Ноль ответственных.</h3>
+      <p>Один делает сайт, второй директ, третий SEO, четвёртый «настроит ИИ». Никто ни за что не отвечает.</p>
+      <div class="quote">«Каждый кивает на другого. Я уже сам разбираюсь»</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= [03] WHAT WE BUILD ======================= -->
+<section class="section" id="what" data-screen-label="03 What we build">
+  <div class="section-head">
+    <div class="section-num">[<b>03</b>] / Что разворачиваем</div>
+    <h2 class="section-title">Семь блоков. Один договор. <em>Всё под ключ.</em></h2>
+    <div class="section-aside">Каждый блок включён в тарифы. Не нужно собирать пазл из подрядчиков и SaaS-кабинетов.</div>
+  </div>
+
+  <div class="what-grid">
+    <div class="what-cell">
+      <span class="num">[01]</span>
+      <div class="ico">С</div>
+      <h4>Сайт / лендинг</h4>
+      <p>Конверсионная посадка под нишу. Мобилка, скорость, формы, аналитика — из коробки.</p>
+      <ul><li>Tilda / Webflow / код</li><li>UTM, события, цели</li><li>Интеграция с CRM</li></ul>
+    </div>
+    <div class="what-cell">
+      <span class="num">[02]</span>
+      <div class="ico">Я</div>
+      <h4>Реклама в Директе</h4>
+      <p>Структура кампаний, креативы, минус-фразы, биддер. Связка с сайтом и CRM — обязательно.</p>
+      <ul><li>Поиск + РСЯ + ретаргет</li><li>Метрика, цели, ecom</li><li>Еженедельная оптимизация</li></ul>
+    </div>
+    <div class="what-cell hl">
+      <span class="num">[03]</span>
+      <div class="ico">A</div>
+      <h4>ИИ-агенты</h4>
+      <p>Отвечают на заявки за 30 секунд, квалифицируют, бронят, чистят CRM, готовят отчёты.</p>
+      <ul><li>WhatsApp · Telegram · сайт</li><li>Связка с CRM</li><li>Сценарии под нишу</li></ul>
+    </div>
+    <div class="what-cell">
+      <span class="num">[04]</span>
+      <div class="ico">К</div>
+      <h4>CRM и воронка</h4>
+      <p>amoCRM или Bitrix. Воронка под бизнес, источники лидов, поля, права, автозадачи.</p>
+      <ul><li>Импорт из Excel/почты</li><li>Связка с телефонией</li><li>Дожимы и напоминания</li></ul>
+    </div>
+    <div class="what-cell">
+      <span class="num">[05]</span>
+      <div class="ico">G</div>
+      <h4>SEO + GEO</h4>
+      <p>Семантика, посадки под запросы, Яндекс Бизнес, отзывы, локальная выдача и AI-ответы.</p>
+      <ul><li>Технический аудит</li><li>Контент-план</li><li>Оптимизация под GPT/Алису</li></ul>
+    </div>
+    <div class="what-cell">
+      <span class="num">[06]</span>
+      <div class="ico">Д</div>
+      <h4>Аналитика и дашборд</h4>
+      <p>Один экран: заявки, источники, бюджет, конверсия, скорость ответа. Без Excel и угадывания.</p>
+      <ul><li>Метрика + CRM + Директ</li><li>Looker / DataLens</li><li>Алерты при падении</li></ul>
+    </div>
+    <div class="what-cell">
+      <span class="num">[07]</span>
+      <div class="ico">Ф</div>
+      <h4>Автоворонки</h4>
+      <p>Письма, чат-боты, триггеры по этапам сделки. Дожим без участия человека.</p>
+      <ul><li>SMS / Email / TG / WA</li><li>Сценарии под цикл сделки</li><li>A/B по копию и времени</li></ul>
+    </div>
+    <div class="what-cell">
+      <span class="num">[+]</span>
+      <div class="ico">±</div>
+      <h4>Add-ons по запросу</h4>
+      <p>Контент-пак, репутация, миграция CRM, обучение команды, дополнительный спринт автоматизации.</p>
+      <ul><li>Reputation pack</li><li>Content pack</li><li>Training session</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= [04] BEFORE / AFTER ======================= -->
+<section class="section" id="ba" data-screen-label="04 Before After">
+  <div class="section-head">
+    <div class="section-num">[<b>04</b>] / Было / стало</div>
+    <h2 class="section-title">Из <em>цифрового хаоса</em> — в работающую систему.</h2>
+    <div class="section-aside">Тот же бизнес, та же ниша. Меняем не «сайт» — меняем способ, которым клиент попадает в кассу.</div>
+  </div>
+
+  <div class="ba-wrap">
+    <div class="ba-col before">
+      <span class="tag">Было</span>
+      <h3>Пять кусков. Никто ни за что не отвечает.</h3>
+      <div class="ba-list">
+        <div class="row"><span class="ic">×</span><span class="lbl">Сайт<small>Тильда 2019, мобилка едет</small></span><span class="val">не конвертит</span></div>
+        <div class="row"><span class="ic">×</span><span class="lbl">Реклама<small>Директ запущен «как-то»</small></span><span class="val">слив 60%</span></div>
+        <div class="row"><span class="ic">×</span><span class="lbl">SEO/GEO<small>Никто не занимается</small></span><span class="val">вне ТОП-50</span></div>
+        <div class="row"><span class="ic">×</span><span class="lbl">Заявки<small>В WhatsApp и в голове</small></span><span class="val">теряем 30%</span></div>
+        <div class="row"><span class="ic">×</span><span class="lbl">Дожим<small>«Перезвоню завтра»</small></span><span class="val">2 ч 40 мин</span></div>
+        <div class="row"><span class="ic">×</span><span class="lbl">Отчёты<small>Excel, раз в месяц</small></span><span class="val">пальцем в небо</span></div>
+      </div>
+    </div>
+
+    <div class="ba-col after">
+      <span class="tag">Стало</span>
+      <h3>Один стек. Один договор. Цифры на дашборде.</h3>
+      <div class="ba-list">
+        <div class="row"><span class="ic">→</span><span class="lbl">Сайт<small>Конверсия ×2.4, LCP 1.2с</small></span><span class="val ok">+138% заявок</span></div>
+        <div class="row"><span class="ic">→</span><span class="lbl">Реклама<small>Директ + связка с CRM</small></span><span class="val ok">CPA −42%</span></div>
+        <div class="row"><span class="ic">→</span><span class="lbl">SEO/GEO<small>ТОП-3 + Я.Бизнес + AI-ответы</small></span><span class="val ok">+бесплатный трафик</span></div>
+        <div class="row"><span class="ic">→</span><span class="lbl">Заявки<small>Все в CRM, размечены, в воронке</small></span><span class="val ok">0 потерь</span></div>
+        <div class="row"><span class="ic">→</span><span class="lbl">Дожим<small>ИИ-агент отвечает за 30 сек</small></span><span class="val ok">&lt; 2 минуты</span></div>
+        <div class="row"><span class="ic">→</span><span class="lbl">Отчёты<small>Дашборд в реальном времени</small></span><span class="val ok">обновлено сейчас</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= [05] TARIFFS ======================= -->
+<section class="section" id="tariffs" data-screen-label="05 Tariffs">
+  <div class="section-head">
+    <div class="section-num">[<b>05</b>] / Тарифы</div>
+    <h2 class="section-title">Пять фиксированных пакетов. <em>Без бесконечных смет.</em></h2>
+    <div class="section-aside">Выбираешь по состоянию бизнеса, а не по «уровню агентства». Можно начать с малого и наращивать.</div>
+  </div>
+
+  <div class="tariff-grid">
+    <div class="tariff">
+      <div class="head">
+        <span class="ix">[01] · Quick Fix</span>
+        <h4>Быстрая починка</h4>
+        <span class="timing">7–14 дней</span>
+      </div>
+      <p class="who">«Сайт есть, но стыдно. Заявок мало.»</p>
+      <ul>
+        <li>Аудит сайта и оффера</li>
+        <li>Переписали главный экран и CTA</li>
+        <li>Мобилка, скорость, формы</li>
+        <li>Метрика и базовые цели</li>
+      </ul>
+      <div class="price">от 60 000 ₽<small>фикс · оплата по этапам</small></div>
+      <a class="cta" href="#diagnose">Починить сайт<span class="arrow">→</span></a>
+    </div>
+
+    <div class="tariff">
+      <div class="head">
+        <span class="ix">[02] · Launch Kit</span>
+        <h4>Старт с нуля</h4>
+        <span class="timing">2–4 недели</span>
+      </div>
+      <p class="who">«У меня вообще ничего нет.»</p>
+      <ul>
+        <li>Лендинг под нишу</li>
+        <li>Захват лида и Я.Бизнес</li>
+        <li>База SEO и аналитики</li>
+        <li>CRM-стартер для заявок</li>
+      </ul>
+      <div class="price">от 180 000 ₽<small>фикс · запуск под ключ</small></div>
+      <a class="cta" href="#diagnose">Начать с нуля<span class="arrow">→</span></a>
+    </div>
+
+    <div class="tariff featured">
+      <span class="badge">★ Чаще всего</span>
+      <div class="head">
+        <span class="ix">[03] · Growth Engine</span>
+        <h4>Двигатель роста</h4>
+        <span class="timing">4–6 недель</span>
+      </div>
+      <p class="who">«Нужны заявки стабильно. И чтобы не сливались.»</p>
+      <ul>
+        <li>Сайт + реклама в Директе</li>
+        <li>SEO + GEO-фундамент</li>
+        <li>CRM + связка с сайтом</li>
+        <li>Дашборд по источникам</li>
+        <li>Ежемесячная оптимизация</li>
+      </ul>
+      <div class="price">от 320 000 ₽ + 90 000 ₽/мес<small>setup + поддержка</small></div>
+      <a class="cta" href="#diagnose">Запустить двигатель<span class="arrow">→</span></a>
+    </div>
+
+    <div class="tariff">
+      <div class="head">
+        <span class="ix">[04] · Smart Operations</span>
+        <h4>Умные операции</h4>
+        <span class="timing">спринт + поддержка</span>
+      </div>
+      <p class="who">«Лиды есть. Теряем на отвечалке и админке.»</p>
+      <ul>
+        <li>Аудит процессов</li>
+        <li>ИИ-агенты под отдел</li>
+        <li>Авто-дожимы и роутинг</li>
+        <li>Чистка и наведение CRM</li>
+        <li>Обучение команды</li>
+      </ul>
+      <div class="price">от 450 000 ₽ + 120 000 ₽/мес<small>setup + поддержка</small></div>
+      <a class="cta" href="#diagnose">Автоматизировать<span class="arrow">→</span></a>
+    </div>
+
+    <div class="tariff">
+      <div class="head">
+        <span class="ix">[05] · Partner</span>
+        <h4>Go Win It Partner</h4>
+        <span class="timing">постоянная команда</span>
+      </div>
+      <p class="who">«Хочу одного партнёра на всю цифру.»</p>
+      <ul>
+        <li>Сайт, реклама, SEO/GEO</li>
+        <li>CRM и ИИ-операции</li>
+        <li>Ежемесячная стратегия</li>
+        <li>Квартальный план роста</li>
+        <li>Приоритетная поддержка</li>
+      </ul>
+      <div class="price">от 250 000 ₽/мес<small>retainer · скоуп под бизнес</small></div>
+      <a class="cta" href="#diagnose">Стать партнёром<span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= [06] HOW IT WORKS ======================= -->
+<section class="section" id="how" data-screen-label="06 How it works">
+  <div class="section-head">
+    <div class="section-num">[<b>06</b>] / Как работаем</div>
+    <h2 class="section-title">От заявки до запущенной системы — <em>пять шагов.</em></h2>
+    <div class="section-aside">Каждый шаг с дедлайном. Без «созвонов раз в неделю обсудить кастомдев».</div>
+  </div>
+
+  <div class="how-grid">
+    <div class="how-step">
+      <span class="step-num">01</span>
+      <h4>Диагностика</h4>
+      <p>Смотрим сайт, рекламу, CRM, выдачу. Пишем, что ломается и что включить первым.</p>
+      <span class="when">Срок · <b>24–48 ч</b></span>
+    </div>
+    <div class="how-step">
+      <span class="step-num">02</span>
+      <h4>Выбираешь тариф</h4>
+      <p>Подбираем пакет по реальной задаче. Фиксируем скоуп, сроки, цену в одном договоре.</p>
+      <span class="when">Срок · <b>1 день</b></span>
+    </div>
+    <div class="how-step">
+      <span class="step-num">03</span>
+      <h4>Разворачиваем</h4>
+      <p>Сайт, реклама, SEO/GEO, CRM, ИИ-агенты, аналитика. Поэтапно, с показом каждые 3–4 дня.</p>
+      <span class="when">Срок · <b>1–6 нед.</b></span>
+    </div>
+    <div class="how-step">
+      <span class="step-num">04</span>
+      <h4>Сшиваем стек</h4>
+      <p>Связываем всё в один поток: трафик → сайт → лид → CRM → ИИ-дожим → дашборд.</p>
+      <span class="when">Срок · <b>3–7 дней</b></span>
+    </div>
+    <div class="how-step">
+      <span class="step-num">05</span>
+      <h4>Оптимизируем</h4>
+      <p>Смотрим цифры, режем что не работает, усиливаем что работает. Каждую неделю.</p>
+      <span class="when">Срок · <b>еженед.</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= [07] AI AGENTS ======================= -->
+<section class="section" id="agents" data-screen-label="07 AI agents">
+  <div class="section-head">
+    <div class="section-num">[<b>07</b>] / ИИ-агенты</div>
+    <h2 class="section-title">ИИ как сотрудник, <em>а не как магия.</em></h2>
+    <div class="section-aside">Конкретные роли. Конкретные задачи. Подключается к сайту, CRM и мессенджерам — и работает.</div>
+  </div>
+
+  <div class="agents-grid">
+    <div class="agent">
+      <div class="head-row"><span class="name">Лид-респондер</span><span class="badge">24/7</span></div>
+      <p class="role">Отвечает в WhatsApp/Telegram/на сайте за 30 секунд. Уточняет 3 вопроса, бронит слот, заводит сделку в CRM.</p>
+      <div class="specs">
+        <div><div class="k">Скорость ответа</div><div class="v">&lt; 30 сек</div></div>
+        <div><div class="k">Канал</div><div class="v">WA · TG · сайт</div></div>
+      </div>
+      <span class="pulse-dot"></span>
+    </div>
+    <div class="agent">
+      <div class="head-row"><span class="name">CRM-чистильщик</span><span class="badge">ежедн.</span></div>
+      <p class="role">Объединяет дубли, размечает источники, ставит задачи на просрочки, удаляет мусор. CRM перестаёт тонуть в шуме.</p>
+      <div class="specs">
+        <div><div class="k">Дублей в день</div><div class="v">~120</div></div>
+        <div><div class="k">Точность</div><div class="v">98.4%</div></div>
+      </div>
+      <span class="pulse-dot"></span>
+    </div>
+    <div class="agent">
+      <div class="head-row"><span class="name">SEO/GEO-публикатор</span><span class="badge">контент</span></div>
+      <p class="role">Готовит и публикует посадки под ключевые запросы и города, обновляет карточку Я.Бизнеса, отвечает на отзывы.</p>
+      <div class="specs">
+        <div><div class="k">Стр. в месяц</div><div class="v">15–40</div></div>
+        <div><div class="k">Языки</div><div class="v">RU + AI-ответы</div></div>
+      </div>
+      <span class="pulse-dot"></span>
+    </div>
+    <div class="agent">
+      <div class="head-row"><span class="name">Аналитик-репортёр</span><span class="badge">еженед.</span></div>
+      <p class="role">Каждый понедельник — сводка: где упали лиды, где вырос CPA, какие источники окупаются. На один экран.</p>
+      <div class="specs">
+        <div><div class="k">Источников</div><div class="v">8+</div></div>
+        <div><div class="k">Алерты</div><div class="v">в TG</div></div>
+      </div>
+      <span class="pulse-dot"></span>
+    </div>
+    <div class="agent">
+      <div class="head-row"><span class="name">Помощник поддержки</span><span class="badge">FAQ</span></div>
+      <p class="role">Закрывает 60–70% типовых вопросов клиентов. Сложное — переводит человеку с готовой выжимкой.</p>
+      <div class="specs">
+        <div><div class="k">Закрывает</div><div class="v">~65%</div></div>
+        <div><div class="k">Эскалация</div><div class="v">&lt; 1 мин</div></div>
+      </div>
+      <span class="pulse-dot"></span>
+    </div>
+    <div class="agent">
+      <div class="head-row"><span class="name">Sales-копирайтер</span><span class="badge">drafts</span></div>
+      <p class="role">Готовит черновики ответов и КП по карточке сделки в CRM. Менеджер только редактирует и нажимает «отправить».</p>
+      <div class="specs">
+        <div><div class="k">Экономия</div><div class="v">~6 ч/нед</div></div>
+        <div><div class="k">Стиль</div><div class="v">под бренд</div></div>
+      </div>
+      <span class="pulse-dot"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= [08] SEO/GEO + ADS ======================= -->
+<section class="section" id="seo" data-screen-label="08 SEO GEO Ads">
+  <div class="section-head">
+    <div class="section-num">[<b>08</b>] / SEO · GEO · реклама</div>
+    <h2 class="section-title">Чтобы тебя <em>находили</em> — и в Яндексе, и на карте, и в ИИ-ответах.</h2>
+    <div class="section-aside">Видимость работает только если приземляется на сайт, который собирает лиды и отдаёт их в CRM.</div>
+  </div>
+
+  <div class="seo-wrap">
+    <div class="seo-left">
+      <p style="font-size:16px;color:var(--ink-2);line-height:1.55;margin:0;max-width:560px">
+        Мы не делаем SEO «ради SEO». Видимость подключается к воронке: запрос → посадка → форма → CRM → ИИ-дожим → дашборд. Каждый источник трафика измерим в заявках, а не в кликах.
+      </p>
+      <div class="seo-flow">
+        <div class="row"><span class="ic">Я</span><span class="lbl">Реклама в Директе<small>Поиск + РСЯ + ретаргет, связка с CRM, биддер</small></span><span class="v">CPA −30…50%</span></div>
+        <div class="row"><span class="ic">S</span><span class="lbl">SEO под нишу<small>Семантика, посадки, контент-план, технический аудит</small></span><span class="v">ТОП-3 за 3–6 мес</span></div>
+        <div class="row"><span class="ic">G</span><span class="lbl">GEO-оптимизация<small>Я.Бизнес, отзывы, локальные запросы «услуга + город»</small></span><span class="v">+бесплатный трафик</span></div>
+        <div class="row"><span class="ic">A</span><span class="lbl">AI-видимость<small>Оптимизация под ответы GPT, Алисы, YandexGPT-search</small></span><span class="v">в ИИ-выдаче</span></div>
+        <div class="row"><span class="ic">★</span><span class="lbl">Репутация<small>Сбор отзывов на автомате, рейтинги, ответы</small></span><span class="v">4.8+</span></div>
+      </div>
+    </div>
+
+    <div class="seo-right">
+      <div class="serp-mock">
+        <div class="serp-bar">
+          <span class="lens"></span>
+          <span class="qq">стоматология рядом со мной круглосуточно</span>
+          <span class="caps" style="color:var(--ink-3)">YANDEX</span>
+        </div>
+        <div class="serp-block gpt">
+          <div class="who">YandexGPT · ИИ-ответ</div>
+          <div class="ttl">Лучшие круглосуточные стоматологии рядом</div>
+          <div class="body">Среди заведений, открытых сейчас: <mark>Клиника «Пример»</mark> — приём 24/7, рейтинг 4.9, в 1.2 км от вас. Запись онлайн через сайт.</div>
+        </div>
+        <div class="serp-block">
+          <div class="who">№1 · Реклама · Яндекс Директ</div>
+          <div class="ttl">«Пример» — приём 24/7, без очереди</div>
+          <div class="body">Запишитесь онлайн за 30 секунд. Первый осмотр и снимок — 0 ₽. Работаем с 6 утра до полуночи.</div>
+          <div class="url">primer.ru/zapis</div>
+        </div>
+        <div class="serp-block">
+          <div class="who">№1 · Органика</div>
+          <div class="ttl">Стоматология «Пример» — круглосуточно в Москве</div>
+          <div class="body">11 врачей, ★ 4.9 (842 отзыва). Цены, врачи, запись на завтра. Метро в 5 минутах.</div>
+          <div class="url">primer.ru</div>
+        </div>
+        <div class="serp-block">
+          <div class="who">Яндекс Карты · Локальная выдача</div>
+          <div class="ttl">«Пример» · 1.2 км · открыто сейчас</div>
+          <div class="body">Рейтинг 4.9 · 842 отзыва · 24/7 · принимает сегодня</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= [09] PROOF ======================= -->
+<section class="section" id="proof" data-screen-label="09 Proof">
+  <div class="section-head">
+    <div class="section-num">[<b>09</b>] / Кейсы</div>
+    <h2 class="section-title">Не «прокачаем стратегию». <em>Запущенный стек и цифры.</em></h2>
+    <div class="section-aside">Подставлены плейсхолдеры скриншотов — заменим на реальные кейсы при подтверждении тарифа NDA-публикации.</div>
+  </div>
+
+  <div class="proof-grid">
+    <div class="proof">
+      <div class="meta-row"><span class="biz">Стоматология</span><span class="city">Казань</span></div>
+      <div class="placeholder"><span>скриншот сайта · 16:9</span></div>
+      <h3 class="ttl">«Запись на завтра» — за 30 секунд через ИИ-агента в WhatsApp</h3>
+      <p style="margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.5">Лендинг + Директ + Я.Бизнес + ИИ-агент в WA. Запуск — 19 дней.</p>
+      <div class="deltas">
+        <div><div class="k">Заявок</div><div class="v">×3.4</div></div>
+        <div><div class="k">CPA</div><div class="v">−42%</div></div>
+        <div><div class="k">Ответ</div><div class="v">28 сек</div></div>
+      </div>
+    </div>
+    <div class="proof">
+      <div class="meta-row"><span class="biz">Автосервис</span><span class="city">Краснодар</span></div>
+      <div class="placeholder"><span>дашборд · до/после</span></div>
+      <h3 class="ttl">CRM из Excel + ИИ-дожим: −0% потерянных заявок за месяц</h3>
+      <p style="margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.5">Перенос лидов из таблиц в amoCRM, авто-дожимы, отчёт в Telegram.</p>
+      <div class="deltas">
+        <div><div class="k">Дожим</div><div class="v">+38%</div></div>
+        <div><div class="k">Потерь</div><div class="v">~0</div></div>
+        <div><div class="k">Срок</div><div class="v">21 д.</div></div>
+      </div>
+    </div>
+    <div class="proof">
+      <div class="meta-row"><span class="biz">Школа английского</span><span class="city">Online · СНГ</span></div>
+      <div class="placeholder"><span>SERP · ТОП-3 + AI</span></div>
+      <h3 class="ttl">SEO + GEO + AI-ответы: бесплатный трафик обогнал Директ</h3>
+      <p style="margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.5">40 посадок под низкочастотку, оптимизация под YandexGPT-ответы.</p>
+      <div class="deltas">
+        <div><div class="k">Органика</div><div class="v">×5.1</div></div>
+        <div><div class="k">CAC</div><div class="v">−61%</div></div>
+        <div><div class="k">Срок</div><div class="v">4 мес</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= [10] FAQ ======================= -->
+<section class="section" id="faq" data-screen-label="10 FAQ">
+  <div class="section-head">
+    <div class="section-num">[<b>10</b>] / Возражения</div>
+    <h2 class="section-title">Что обычно <em>спрашивают</em> перед тем, как нажать.</h2>
+    <div class="section-aside">Если твой вопрос не здесь — пиши в форме диагностики. Ответим лично.</div>
+  </div>
+
+  <div class="faq">
+    <details class="qa" open>
+      <summary><span class="ix">Q-01</span><span>Нам не нужен ИИ. Нужны клиенты.</span><span class="pm">+</span></summary>
+      <div class="answer">Согласны. Сначала фундамент: сайт, реклама, CRM, дожим. ИИ подключаем только там, где он экономит часы или ловит лидов, которые иначе остыли бы. Никакого ИИ ради ИИ.</div>
+    </details>
+    <details class="qa">
+      <summary><span class="ix">Q-02</span><span>Уже пробовали Директ — слили деньги.</span><span class="pm">+</span></summary>
+      <div class="answer">Обычно дело не в кампаниях, а в связке: оффер, посадка, аналитика, CRM, скорость ответа. Чиним полный путь, а не только рекламу.</div>
+    </details>
+    <details class="qa">
+      <summary><span class="ix">Q-03</span><span>У нас уже есть сайт.</span><span class="pm">+</span></summary>
+      <div class="answer">Окей. Смотрим, конвертит ли он, грузится ли, ловит ли лидов в CRM. Если да — оставляем и докручиваем. Если нет — переделываем по тарифу Quick Fix или Launch Kit.</div>
+    </details>
+    <details class="qa">
+      <summary><span class="ix">Q-04</span><span>Большое агентство — это дорого. Это тоже?</span><span class="pm">+</span></summary>
+      <div class="answer">Поэтому продукт фиксированный. Тарифы прозрачные, скоуп заранее. Без «процесса агентства» с тремя согласованиями и пятью аккаунт-менеджерами.</div>
+    </details>
+    <details class="qa">
+      <summary><span class="ix">Q-05</span><span>Можно начать с малого?</span><span class="pm">+</span></summary>
+      <div class="answer">Да. Quick Fix или Launch Kit, потом наращиваем рекламу, CRM и автоматизацию, когда фундамент уже работает.</div>
+    </details>
+    <details class="qa">
+      <summary><span class="ix">Q-06</span><span>Как быстро это всё запустится?</span><span class="pm">+</span></summary>
+      <div class="answer">Мелкие правки — за дни. Запуск с нуля — недели. Полная связка с CRM/ИИ/аналитикой — ~4–6 недель. Каждый этап — с дедлайном в договоре.</div>
+    </details>
+    <details class="qa">
+      <summary><span class="ix">Q-07</span><span>Гарантируете результат?</span><span class="pm">+</span></summary>
+      <div class="answer">Не гарантируем выручку и позиции — это нечестно. Гарантируем чёткий скоуп, рабочие деливрабли, чистую аналитику и систему, которую можно улучшать по цифрам.</div>
+    </details>
+    <details class="qa">
+      <summary><span class="ix">Q-08</span><span>Почему «закрытый клуб»?</span><span class="pm">+</span></summary>
+      <div class="answer">Берём ограниченное число проектов в месяц, чтобы держать сроки и качество. Заявки идут в очередь. Поэтому в шапке стоит «Запись · апрель».</div>
+    </details>
+  </div>
+</section>
+
+<!-- ======================= [11] FINAL CTA ======================= -->
+<section class="section" id="final" data-screen-label="11 Final CTA" style="border-bottom:1px solid var(--ink)">
+  <div class="final">
+    <div>
+      <span class="caps" style="color:color-mix(in oklab, var(--bg) 60%, transparent)">[11] · Финальный шаг</span>
+      <h2>Не уверен, с чего начать? <em>Покажи, что есть.</em></h2>
+      <p>
+        Пришли ссылку на сайт — или напиши «ничего нет».
+        За 24–48 часов вернём аудит: что ломается, что включить первым, в какой тариф это попадает.
+        Без созвона, без «давайте подумаем над стратегией».
+      </p>
+      <div class="ctas">
+        <a class="btn accent lg" href="#diagnose">Получить диагностику<span class="arrow">→</span></a>
+        <a class="btn ghost lg" href="#tariffs">Посмотреть тарифы<span class="arrow">→</span></a>
+      </div>
+    </div>
+    <div class="final-side">
+      <div class="item"><span class="ix">[A]</span><span class="lab">Аудит сайта и стека</span><span class="v">24–48 ч</span></div>
+      <div class="item"><span class="ix">[B]</span><span class="lab">Подбор тарифа под задачу</span><span class="v">1 день</span></div>
+      <div class="item"><span class="ix">[C]</span><span class="lab">Старт работ и первый показ</span><span class="v">3–4 дня</span></div>
+      <div class="item"><span class="ix">[D]</span><span class="lab">Запущенный стек на боевом</span><span class="v">7–42 дня</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© GoWinDo it · нейро-агентство полного цикла</span>
+  <span>hello@gowinit.ru</span>
+  <span class="end"><span class="dot"></span>Запись · апрель</span>
+</footer>
+
+</body>
+</html>
+
