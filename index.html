@@ -328,6 +328,30 @@
     100%{box-shadow:0 0 0 0 transparent}
   }
 
+  /* Archived nodes — red marker X */
+  .node.archived{
+    opacity:.45;
+    position:relative;
+    overflow:hidden;
+  }
+  .node.archived::before,
+  .node.archived::after{
+    content:"";
+    position:absolute;
+    top:50%;left:50%;
+    width:130%;height:3.5px;
+    background:linear-gradient(90deg, rgba(220,38,38,0.1), rgba(220,38,38,0.7) 20%, rgba(220,38,38,0.85) 50%, rgba(220,38,38,0.7) 80%, rgba(220,38,38,0.1));
+    border-radius:2px;
+    z-index:5;
+    pointer-events:none;
+  }
+  .node.archived::before{
+    transform:translate(-50%,-50%) rotate(35deg);
+  }
+  .node.archived::after{
+    transform:translate(-50%,-50%) rotate(-35deg);
+  }
+
   /* SVG connector overlay */
   svg.wires{
     position:absolute;inset:24px;
@@ -529,9 +553,14 @@
   }
   .agent:nth-child(3n){border-right:0}
   .agent:nth-last-child(-n+3){border-bottom:0}
-  .agent .head-row{display:flex;align-items:center;justify-content:space-between}
+  .agent .head-row{display:flex;align-items:center;gap:12px}
+  .agent-avatar{
+    width:48px;height:48px;border-radius:50%;overflow:hidden;flex-shrink:0;
+    border:2px solid var(--rule);background:var(--bg-2);
+  }
+  .agent-avatar img{width:100%;height:100%;object-fit:cover}
   .agent .name{font-family:"Outfit",sans-serif;font-weight:600;font-size:18px;letter-spacing:-0.01em}
-  .agent .badge{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--rule);padding:3px 8px}
+  .agent .badge{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--rule);padding:3px 8px;margin-left:auto;flex-shrink:0}
   .agent .role{font-size:13.5px;color:var(--ink-2);line-height:1.5}
   .agent .specs{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px dashed var(--rule);padding-top:10px}
   .agent .specs .k{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
@@ -888,7 +917,7 @@
             <div><div class="name">Захват лида</div><div class="meta">форма · бронь · whatsapp</div></div>
           </div>
 
-          <div class="node" style="grid-column:1; opacity:.55">
+          <div class="node archived" style="grid-column:1">
             <div class="top"><span class="ico" style="background:var(--bg-2)">·</span><span class="stat">архив</span></div>
             <div><div class="name">Старая воронка</div><div class="meta">отключена при запуске</div></div>
           </div>
@@ -903,7 +932,7 @@
             <span class="pulse"></span>
           </div>
 
-          <div class="node" style="opacity:.55">
+          <div class="node archived">
             <div class="top"><span class="ico" style="background:var(--bg-2)">·</span><span class="stat">архив</span></div>
             <div><div class="name">Excel-таблица</div><div class="meta">leads.xlsx → перенесено</div></div>
           </div>
@@ -1254,7 +1283,7 @@
 
   <div class="agents-grid">
     <div class="agent">
-      <div class="head-row"><span class="name">Лид-респондер</span><span class="badge">24/7</span></div>
+      <div class="head-row"><span class="agent-avatar"><img src="img/agent-responder.png" alt="Лид-респондер" loading="lazy" /></span><span class="name">Лид-респондер</span><span class="badge">24/7</span></div>
       <p class="role">Отвечает в WhatsApp/Telegram/на сайте за 30 секунд. Уточняет 3 вопроса, бронит слот, заводит сделку в CRM.</p>
       <div class="specs">
         <div><div class="k">Скорость ответа</div><div class="v">&lt; 30 сек</div></div>
@@ -1263,7 +1292,7 @@
       <span class="pulse-dot"></span>
     </div>
     <div class="agent">
-      <div class="head-row"><span class="name">CRM-чистильщик</span><span class="badge">ежедн.</span></div>
+      <div class="head-row"><span class="agent-avatar"><img src="img/agent-crm.png" alt="CRM-чистильщик" loading="lazy" /></span><span class="name">CRM-чистильщик</span><span class="badge">ежедн.</span></div>
       <p class="role">Объединяет дубли, размечает источники, ставит задачи на просрочки, удаляет мусор. CRM перестаёт тонуть в шуме.</p>
       <div class="specs">
         <div><div class="k">Дублей в день</div><div class="v">~120</div></div>
@@ -1272,7 +1301,7 @@
       <span class="pulse-dot"></span>
     </div>
     <div class="agent">
-      <div class="head-row"><span class="name">SEO/GEO-публикатор</span><span class="badge">контент</span></div>
+      <div class="head-row"><span class="agent-avatar"><img src="img/agent-seo.png" alt="SEO/GEO-публикатор" loading="lazy" /></span><span class="name">SEO/GEO-публикатор</span><span class="badge">контент</span></div>
       <p class="role">Готовит и публикует посадки под ключевые запросы и города, обновляет карточку Я.Бизнеса, отвечает на отзывы.</p>
       <div class="specs">
         <div><div class="k">Стр. в месяц</div><div class="v">15–40</div></div>
@@ -1281,7 +1310,7 @@
       <span class="pulse-dot"></span>
     </div>
     <div class="agent">
-      <div class="head-row"><span class="name">Аналитик-репортёр</span><span class="badge">еженед.</span></div>
+      <div class="head-row"><span class="agent-avatar"><img src="img/agent-analyst.png" alt="Аналитик-репортёр" loading="lazy" /></span><span class="name">Аналитик-репортёр</span><span class="badge">еженед.</span></div>
       <p class="role">Каждый понедельник — сводка: где упали лиды, где вырос CPA, какие источники окупаются. На один экран.</p>
       <div class="specs">
         <div><div class="k">Источников</div><div class="v">8+</div></div>
@@ -1290,7 +1319,7 @@
       <span class="pulse-dot"></span>
     </div>
     <div class="agent">
-      <div class="head-row"><span class="name">Помощник поддержки</span><span class="badge">FAQ</span></div>
+      <div class="head-row"><span class="agent-avatar"><img src="img/agent-support.png" alt="Помощник поддержки" loading="lazy" /></span><span class="name">Помощник поддержки</span><span class="badge">FAQ</span></div>
       <p class="role">Закрывает 60–70% типовых вопросов клиентов. Сложное — переводит человеку с готовой выжимкой.</p>
       <div class="specs">
         <div><div class="k">Закрывает</div><div class="v">~65%</div></div>
@@ -1299,7 +1328,7 @@
       <span class="pulse-dot"></span>
     </div>
     <div class="agent">
-      <div class="head-row"><span class="name">Sales-копирайтер</span><span class="badge">drafts</span></div>
+      <div class="head-row"><span class="agent-avatar"><img src="img/agent-copywriter.png" alt="Sales-копирайтер" loading="lazy" /></span><span class="name">Sales-копирайтер</span><span class="badge">drafts</span></div>
       <p class="role">Готовит черновики ответов и КП по карточке сделки в CRM. Менеджер только редактирует и нажимает «отправить».</p>
       <div class="specs">
         <div><div class="k">Экономия</div><div class="v">~6 ч/нед</div></div>
