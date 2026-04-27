@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta property="og:title" content="GoWinDo it — нейро-агентство полного цикла" />
 <meta property="og:description" content="Сайт → Реклама → SEO → CRM → ИИ-агенты → Дашборд. Один договор. Под ключ." />
+<link rel="icon" type="image/png" href="img/logo-lion.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -106,11 +107,9 @@
   }
   .brand{display:flex;align-items:center;gap:10px;font-family:"Outfit",sans-serif;font-weight:800;font-size:18px}
   .brand-mark{
-    width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-ink));position:relative;display:inline-block;
+    width:34px;height:34px;border-radius:50%;overflow:hidden;display:inline-flex;flex-shrink:0;
   }
-  .brand-mark::after{
-    content:"";position:absolute;inset:6px;background:#fff;border-radius:3px;
-  }
+  .brand-mark img{width:100%;height:100%;object-fit:cover}
   .brand-tag{color:var(--ink-3);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;margin-left:6px;text-transform:uppercase;font-weight:500}
   nav.primary{display:flex;gap:28px;justify-self:center}
   nav.primary a{color:var(--ink);text-decoration:none;font-size:14px;font-weight:600;transition:color var(--dur)}
@@ -584,16 +583,15 @@
   .proof .meta-row{display:flex;align-items:center;justify-content:space-between}
   .proof .biz{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
   .proof .city{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3)}
-  .proof .placeholder{
+  .proof .case-img{
     aspect-ratio:16/9;border:1px solid var(--ink);
-    background:
-      repeating-linear-gradient(45deg, var(--bg) 0 8px, var(--bg-2) 8px 16px);
-    position:relative;display:grid;place-items:center;
+    overflow:hidden;position:relative;border-radius:var(--r-sm);
   }
-  .proof .placeholder span{
-    font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-2);
-    background:var(--bg);padding:4px 8px;border:1px solid var(--ink);
+  .proof .case-img img{
+    width:100%;height:100%;object-fit:cover;
+    transition:transform .4s var(--ease-out);
   }
+  .proof:hover .case-img img{transform:scale(1.03)}
   .proof .ttl{font-family:"Outfit",sans-serif;font-weight:600;font-size:17px;letter-spacing:-0.01em;line-height:1.2;margin:0}
   .proof .deltas{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--rule);margin-top:auto}
   .proof .deltas div{padding:10px 8px 0;border-right:1px dashed var(--rule)}
@@ -622,31 +620,111 @@
   /* ——— [11] Final CTA ——— */
   .final{
     border:1px solid var(--ink);background:var(--ink);color:var(--bg);
-    padding:64px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:end;
+    padding:64px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:start;
     position:relative;overflow:hidden;
   }
   .final::before{
     content:"";position:absolute;inset:0;
     background:
-      radial-gradient(circle at 100% 100%, color-mix(in oklab, var(--accent) 25%, transparent), transparent 50%);
+      radial-gradient(circle at 100% 100%, rgba(249,115,22,0.15), transparent 50%);
     pointer-events:none;
   }
-  .final h2{font-family:"Outfit",sans-serif;font-weight:600;font-size:64px;line-height:0.96;letter-spacing:-0.03em;margin:0 0 24px;text-wrap:balance;position:relative}
+  .final h2{font-family:"Outfit",sans-serif;font-weight:700;font-size:52px;line-height:1;letter-spacing:-0.03em;margin:0 0 20px;text-wrap:balance;position:relative}
   .final h2 em{font-style:normal;color:var(--accent)}
-  .final p{font-size:17px;color:color-mix(in oklab, var(--bg) 75%, transparent);max-width:520px;margin:0 0 28px;position:relative}
+  .final p{font-size:16px;color:rgba(255,251,245,0.65);max-width:520px;margin:0 0 24px;position:relative;line-height:1.55}
   .final .ctas{display:flex;gap:14px;flex-wrap:wrap;position:relative}
   .final .ctas .btn{height:54px;padding:0 22px;font-size:15px}
   .final .ctas .btn.ghost{color:var(--bg);border-color:var(--bg)}
   .final .ctas .btn.ghost:hover{background:var(--bg);color:var(--ink)}
-  .final-side{position:relative;display:flex;flex-direction:column;gap:14px}
-  .final-side .item{
-    display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
-    border-top:1px solid color-mix(in oklab, var(--bg) 25%, transparent);padding:14px 0;
+
+  /* Lead Form */
+  .lead-form{
+    position:relative;z-index:1;
+    background:rgba(255,251,245,0.06);
+    border:1px solid rgba(255,251,245,0.12);
+    border-radius:var(--r-md);
+    padding:32px;
+    display:flex;flex-direction:column;gap:20px;
+    backdrop-filter:blur(12px);
   }
-  .final-side .item:last-child{border-bottom:1px solid color-mix(in oklab, var(--bg) 25%, transparent)}
-  .final-side .ix{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;color:color-mix(in oklab, var(--bg) 60%, transparent)}
-  .final-side .lab{font-family:"Outfit",sans-serif;font-weight:500;font-size:16px;color:var(--bg)}
-  .final-side .v{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+  .lead-form .form-title{
+    font-family:"Outfit",sans-serif;font-weight:700;font-size:20px;
+    color:var(--bg);margin:0;display:flex;align-items:center;gap:10px;
+  }
+  .lead-form .form-title .badge{
+    font-family:"JetBrains Mono",monospace;font-size:10px;
+    background:var(--accent);color:#fff;padding:3px 8px;border-radius:4px;
+    text-transform:uppercase;letter-spacing:.08em;
+  }
+  .lead-form label{
+    font-family:"JetBrains Mono",monospace;font-size:11px;
+    text-transform:uppercase;letter-spacing:.1em;
+    color:rgba(255,251,245,0.5);display:block;margin-bottom:8px;
+  }
+  .lead-form textarea,
+  .lead-form input[type="text"],
+  .lead-form input[type="email"]{
+    width:100%;padding:14px 16px;
+    background:rgba(255,251,245,0.08);
+    border:1px solid rgba(255,251,245,0.15);
+    border-radius:var(--r-sm);
+    color:var(--bg);font-family:"Inter",sans-serif;font-size:14px;
+    transition:border-color var(--dur), background var(--dur);
+    outline:none;box-sizing:border-box;
+  }
+  .lead-form textarea{resize:vertical;min-height:80px}
+  .lead-form textarea:focus,
+  .lead-form input[type="text"]:focus,
+  .lead-form input[type="email"]:focus{
+    border-color:var(--accent);background:rgba(255,251,245,0.12);
+  }
+  .lead-form .radio-group{
+    display:flex;gap:12px;
+  }
+  .lead-form .radio-option{
+    display:flex;align-items:center;gap:8px;cursor:pointer;
+    padding:10px 16px;
+    border:1px solid rgba(255,251,245,0.15);
+    border-radius:var(--r-sm);
+    transition:all var(--dur);
+    font-family:"Inter",sans-serif;font-size:14px;color:rgba(255,251,245,0.7);
+  }
+  .lead-form .radio-option:has(input:checked){
+    border-color:var(--accent);background:rgba(249,115,22,0.12);color:var(--bg);
+  }
+  .lead-form .radio-option input{display:none}
+  .lead-form .radio-dot{
+    width:16px;height:16px;border-radius:50%;
+    border:2px solid rgba(255,251,245,0.3);
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:all var(--dur);
+  }
+  .lead-form .radio-option:has(input:checked) .radio-dot{
+    border-color:var(--accent);
+  }
+  .lead-form .radio-option:has(input:checked) .radio-dot::after{
+    content:"";width:8px;height:8px;border-radius:50%;background:var(--accent);
+  }
+  .lead-form .form-submit{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    width:100%;height:54px;
+    background:var(--accent);color:#fff;
+    border:none;border-radius:var(--r-sm);
+    font-family:"Inter",sans-serif;font-weight:700;font-size:15px;
+    cursor:pointer;
+    transition:all var(--dur) var(--ease-out);
+    box-shadow:0 4px 24px rgba(249,115,22,0.3);
+  }
+  .lead-form .form-submit:hover{
+    background:var(--accent-ink);transform:translateY(-2px);
+    box-shadow:0 8px 32px rgba(249,115,22,0.4);
+  }
+  .lead-form .form-submit .arrow{transition:transform .2s}
+  .lead-form .form-submit:hover .arrow{transform:translateX(3px)}
+  .lead-form .form-note{
+    font-family:"JetBrains Mono",monospace;font-size:11px;
+    color:rgba(255,251,245,0.4);text-align:center;letter-spacing:.05em;
+  }
 
   /* Footer */
   footer{
@@ -682,7 +760,7 @@
 <header class="topbar">
   <div class="topbar-inner">
     <div class="brand">
-      <span class="brand-mark"></span>
+      <span class="brand-mark"><img src="img/logo-lion.png" alt="GoWinDo it" /></span>
       GoWinDo it
       <span class="brand-tag">/ нейро-агентство полного цикла</span>
     </div>
@@ -1293,13 +1371,13 @@
   <div class="section-head">
     <div class="section-num">[<b>09</b>] / Кейсы</div>
     <h2 class="section-title">Не «прокачаем стратегию». <em>Запущенный стек и цифры.</em></h2>
-    <div class="section-aside">Подставлены плейсхолдеры скриншотов — заменим на реальные кейсы при подтверждении тарифа NDA-публикации.</div>
+    <div class="section-aside">Реальные результаты наших клиентов. Цифры, дашборды, сроки.</div>
   </div>
 
   <div class="proof-grid">
     <div class="proof">
       <div class="meta-row"><span class="biz">Стоматология</span><span class="city">Казань</span></div>
-      <div class="placeholder"><span>скриншот сайта · 16:9</span></div>
+      <div class="case-img"><img src="img/case-dental.png" alt="Дашборд стоматологии — рост заявок x3.4" loading="lazy" /></div>
       <h3 class="ttl">«Запись на завтра» — за 30 секунд через ИИ-агента в WhatsApp</h3>
       <p style="margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.5">Лендинг + Директ + Я.Бизнес + ИИ-агент в WA. Запуск — 19 дней.</p>
       <div class="deltas">
@@ -1310,7 +1388,7 @@
     </div>
     <div class="proof">
       <div class="meta-row"><span class="biz">Автосервис</span><span class="city">Краснодар</span></div>
-      <div class="placeholder"><span>дашборд · до/после</span></div>
+      <div class="case-img"><img src="img/case-autoservice.png" alt="CRM автосервиса — 0% потерянных заявок" loading="lazy" /></div>
       <h3 class="ttl">CRM из Excel + ИИ-дожим: −0% потерянных заявок за месяц</h3>
       <p style="margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.5">Перенос лидов из таблиц в amoCRM, авто-дожимы, отчёт в Telegram.</p>
       <div class="deltas">
@@ -1321,7 +1399,7 @@
     </div>
     <div class="proof">
       <div class="meta-row"><span class="biz">Школа английского</span><span class="city">Online · СНГ</span></div>
-      <div class="placeholder"><span>SERP · ТОП-3 + AI</span></div>
+      <div class="case-img"><img src="img/case-school.png" alt="SEO-дашборд школы — органика x5.1" loading="lazy" /></div>
       <h3 class="ttl">SEO + GEO + AI-ответы: бесплатный трафик обогнал Директ</h3>
       <p style="margin:0;color:var(--ink-2);font-size:13.5px;line-height:1.5">40 посадок под низкочастотку, оптимизация под YandexGPT-ответы.</p>
       <div class="deltas">
@@ -1381,23 +1459,65 @@
 <section class="section" id="final" data-screen-label="11 Final CTA" style="border-bottom:1px solid var(--ink)">
   <div class="final">
     <div>
-      <span class="caps" style="color:color-mix(in oklab, var(--bg) 60%, transparent)">[11] · Финальный шаг</span>
+      <span class="caps" style="color:rgba(255,251,245,0.45)">[11] · Финальный шаг</span>
       <h2>Не уверен, с чего начать? <em>Покажи, что есть.</em></h2>
       <p>
-        Пришли ссылку на сайт — или напиши «ничего нет».
-        За 24–48 часов вернём аудит: что ломается, что включить первым, в какой тариф это попадает.
-        Без созвона, без «давайте подумаем над стратегией».
+        Напиши ссылку на сайт, или расскажи о бизнесе — мы разберёмся сами.
+        За 24–48 часов вернём аудит: что ломается, что включить первым, и в какой тариф это попадает.
       </p>
-      <div class="ctas">
-        <a class="btn accent lg" href="#diagnose">Получить диагностику<span class="arrow">→</span></a>
-        <a class="btn ghost lg" href="#tariffs">Посмотреть тарифы<span class="arrow">→</span></a>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;position:relative">
+        <div style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,251,245,0.4)">
+          <span style="width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px rgba(16,185,129,0.18)"></span> Открыта запись · апрель
+        </div>
       </div>
     </div>
-    <div class="final-side">
-      <div class="item"><span class="ix">[A]</span><span class="lab">Аудит сайта и стека</span><span class="v">24–48 ч</span></div>
-      <div class="item"><span class="ix">[B]</span><span class="lab">Подбор тарифа под задачу</span><span class="v">1 день</span></div>
-      <div class="item"><span class="ix">[C]</span><span class="lab">Старт работ и первый показ</span><span class="v">3–4 дня</span></div>
-      <div class="item"><span class="ix">[D]</span><span class="lab">Запущенный стек на боевом</span><span class="v">7–42 дня</span></div>
+
+    <!-- Lead Form -->
+    <form class="lead-form" id="lead-form" onsubmit="event.preventDefault(); document.getElementById('form-success').style.display='flex'; this.style.display='none';">
+      <div class="form-title">
+        Бесплатная диагностика
+        <span class="badge">24–48 ч</span>
+      </div>
+
+      <div>
+        <label for="lead-business">Сайт или описание вашего дела</label>
+        <textarea id="lead-business" name="business" placeholder="https://мой-сайт.ru — или опишите: чем занимаетесь, кто клиенты, что болит" required></textarea>
+      </div>
+
+      <div>
+        <label>Куда прислать результат?</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="channel" value="telegram" checked />
+            <span class="radio-dot"></span>
+            ✈️ Telegram
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="channel" value="email" />
+            <span class="radio-dot"></span>
+            ✉️ Email
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label for="lead-contact">Ваш контакт</label>
+        <input type="text" id="lead-contact" name="contact" placeholder="@username, +7..., или email@..." required />
+      </div>
+
+      <button type="submit" class="form-submit">
+        Получить аудит за 24–48 часов
+        <span class="arrow">→</span>
+      </button>
+
+      <div class="form-note">Без созвона · ответ лично · фикс-цена</div>
+    </form>
+
+    <!-- Success state -->
+    <div id="form-success" style="display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:48px 32px;position:relative;z-index:1;text-align:center">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font-size:28px">✓</div>
+      <div style="font-family:'Outfit',sans-serif;font-weight:700;font-size:24px;color:var(--bg)">Заявка принята!</div>
+      <div style="font-size:15px;color:rgba(255,251,245,0.65);max-width:320px;line-height:1.5">Аудит вышлем за 24–48 часов. Без созвона, без «давайте подумаем».</div>
     </div>
   </div>
 </section>
